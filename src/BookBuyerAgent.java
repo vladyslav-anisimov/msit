@@ -17,18 +17,18 @@ public class BookBuyerAgent extends Agent {
     // Put agent initializations here
     protected void setup() {
         // Printout a welcome message
-        System.out.println("Hallo! Buyer-agent "+getAID().getName()+" is ready.");
+        System.out.println("Hallo! Buyer-agent " + getAID().getName() + " is ready.");
 
         // Get the title of the book to buy as a start-up argument
         Object[] args = getArguments();
         if (args != null && args.length > 0) {
             targetBookTitle = (String) args[0];
-            System.out.println("Target book is "+targetBookTitle);
+            System.out.println("Target book is " + targetBookTitle);
 
             // Add a TickerBehaviour that schedules a request to seller agents every minute
-            addBehaviour(new TickerBehaviour(this, 10000) {
+            addBehaviour(new TickerBehaviour(this, 60000) {
                 protected void onTick() {
-                    System.out.println("Trying to buy "+targetBookTitle);
+                    System.out.println("Trying to buy " + targetBookTitle);
                     // Update the list of seller agents
                     DFAgentDescription template = new DFAgentDescription();
                     ServiceDescription sd = new ServiceDescription();
@@ -49,7 +49,7 @@ public class BookBuyerAgent extends Agent {
                     // Perform the request
                     myAgent.addBehaviour(new RequestPerformer());
                 }
-            } );
+            });
         } else {
             // Make the agent terminate
             System.out.println("No target book title specified");
@@ -60,13 +60,13 @@ public class BookBuyerAgent extends Agent {
     // Put agent clean-up operations here
     protected void takeDown() {
         // Printout a dismissal message
-        System.out.println("Buyer-agent "+getAID().getName()+" terminating.");
+        System.out.println("Buyer-agent " + getAID().getName() + " terminating.");
     }
 
     /**
-     Inner class RequestPerformer.
-     This is the behaviour used by Book-buyer agents to request seller
-     agents the target book.
+     * Inner class RequestPerformer.
+     * This is the behaviour used by Book-buyer agents to request seller
+     * agents the target book.
      */
     private class RequestPerformer extends Behaviour {
         private AID bestSeller; // The agent who provides the best offer
@@ -85,7 +85,7 @@ public class BookBuyerAgent extends Agent {
                     }
                     cfp.setContent(targetBookTitle);
                     cfp.setConversationId("book-trade");
-                    cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
+                    cfp.setReplyWith("cfp" + System.currentTimeMillis()); // Unique value
                     myAgent.send(cfp);
                     // Prepare the template to get proposals
                     mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
@@ -121,7 +121,7 @@ public class BookBuyerAgent extends Agent {
                     order.addReceiver(bestSeller);
                     order.setContent(targetBookTitle);
                     order.setConversationId("book-trade");
-                    order.setReplyWith("order"+System.currentTimeMillis());
+                    order.setReplyWith("order" + System.currentTimeMillis());
                     myAgent.send(order);
                     // Prepare the template to get the purchase order reply
                     mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
@@ -135,8 +135,8 @@ public class BookBuyerAgent extends Agent {
                         // Purchase order reply received
                         if (reply.getPerformative() == ACLMessage.INFORM) {
                             // Purchase successful. We can terminate
-                            System.out.println(targetBookTitle+" successfully purchased from agent "+reply.getSender().getName());
-                            System.out.println("Price = "+bestPrice);
+                            System.out.println(targetBookTitle + " successfully purchased from agent " + reply.getSender().getName());
+                            System.out.println("Price = " + bestPrice);
                             myAgent.doDelete();
                         } else {
                             System.out.println("Attempt failed: requested book already sold.");
@@ -152,7 +152,7 @@ public class BookBuyerAgent extends Agent {
 
         public boolean done() {
             if (step == 2 && bestSeller == null) {
-                System.out.println("Attempt failed: "+targetBookTitle+" not available for sale");
+                System.out.println("Attempt failed: " + targetBookTitle + " not available for sale");
             }
             return ((step == 2 && bestSeller == null) || step == 4);
         }

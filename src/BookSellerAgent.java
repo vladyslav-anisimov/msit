@@ -55,28 +55,28 @@ public class BookSellerAgent extends Agent {
         // Close the GUI
         myGui.dispose();
         // Printout a dismissal message
-        System.out.println("Seller-agent "+getAID().getName()+" terminating.");
+        System.out.println("Seller-agent " + getAID().getName() + " terminating.");
     }
 
     /**
-     This is invoked by the GUI when the user adds a new book for sale
+     * This is invoked by the GUI when the user adds a new book for sale
      */
     public void updateCatalogue(final String title, final int price) {
         addBehaviour(new OneShotBehaviour() {
             public void action() {
                 catalogue.put(title, new Integer(price));
-                System.out.println(title+" inserted into catalogue. Price = "+price);
+                System.out.println(title + " inserted into catalogue. Price = " + price);
             }
         });
     }
 
     /**
-     Inner class OfferRequestsServer.
-     This is the behaviour used by Book-seller agents to serve incoming requests
-     for offer from buyer agents.
-     If the requested book is in the local catalogue the seller agent replies
-     with a PROPOSE message specifying the price. Otherwise a REFUSE message is
-     sent back.
+     * Inner class OfferRequestsServer.
+     * This is the behaviour used by Book-seller agents to serve incoming requests
+     * for offer from buyer agents.
+     * If the requested book is in the local catalogue the seller agent replies
+     * with a PROPOSE message specifying the price. Otherwise a REFUSE message is
+     * sent back.
      */
     private class OfferRequestsServer extends CyclicBehaviour {
         public void action() {
@@ -105,12 +105,12 @@ public class BookSellerAgent extends Agent {
     }  // End of inner class OfferRequestsServer
 
     /**
-     Inner class PurchaseOrdersServer.
-     This is the behaviour used by Book-seller agents to serve incoming
-     offer acceptances (i.e. purchase orders) from buyer agents.
-     The seller agent removes the purchased book from its catalogue
-     and replies with an INFORM message to notify the buyer that the
-     purchase has been successfully completed.
+     * Inner class PurchaseOrdersServer.
+     * This is the behaviour used by Book-seller agents to serve incoming
+     * offer acceptances (i.e. purchase orders) from buyer agents.
+     * The seller agent removes the purchased book from its catalogue
+     * and replies with an INFORM message to notify the buyer that the
+     * purchase has been sucesfully completed.
      */
     private class PurchaseOrdersServer extends CyclicBehaviour {
         public void action() {
@@ -124,7 +124,7 @@ public class BookSellerAgent extends Agent {
                 Integer price = (Integer) catalogue.remove(title);
                 if (price != null) {
                     reply.setPerformative(ACLMessage.INFORM);
-                    System.out.println(title+" sold to agent "+msg.getSender().getName());
+                    System.out.println(title + " sold to agent " + msg.getSender().getName());
                 } else {
                     // The requested book has been sold to another buyer in the meanwhile .
                     reply.setPerformative(ACLMessage.FAILURE);
@@ -136,5 +136,4 @@ public class BookSellerAgent extends Agent {
             }
         }
     }  // End of inner class OfferRequestsServer
-
-} // end of the agent class
+}
